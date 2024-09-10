@@ -1,0 +1,7 @@
+{
+  "name": "recordatorioApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
