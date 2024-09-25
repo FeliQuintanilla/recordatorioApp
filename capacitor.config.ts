@@ -1,9 +1,8 @@
-import type { CapacitorConfig } from '@capacitor/cli';
-
-const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+const config = {
+  appId: 'com.example.app',
   appName: 'recordatorioApp',
-  webDir: 'www'
+  webDir: 'www', // Asegúrate de que esta línea esté presente
+  bundledWebRuntime: false
 };
 
 export default config;

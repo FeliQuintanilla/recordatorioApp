@@ -1,20 +1,28 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title>Reminder</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <div class="welcome-container">
+    <h2>¡Bienvenido, {{ username }}!</h2>
+    <p>¿Qué quieres recordar?</p>
+    <ion-button expand="block" (click)="toggleAddReminder()">Agregar recordatorio</ion-button>
+<!-- Campo para agregar un recordatorio simple -->
+<div *ngIf="isAddingReminder" class="add-reminder-container">
+  <ion-item>
+    <ion-label position="floating">Título del recordatorio</ion-label>
+    <ion-input [(ngModel)]="newReminderTitle"></ion-input>
+  </ion-item>
+  <ion-button expand="block" (click)="saveReminder()">Guardar recordatorio</ion-button>
+</div>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+<!-- Lista de recordatorios guardados -->
+<ion-list *ngIf="reminders.length > 0">
+  <ion-item *ngFor="let reminder of reminders">
+    <ion-label>{{ reminder.title }}</ion-label>
+  </ion-item>
+</ion-list>
+</div>
 </ion-content>

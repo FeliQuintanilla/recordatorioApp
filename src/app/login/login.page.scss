@@ -1,0 +1,49 @@
+.login-logo {
+  text-align: center;
+  margin-top: 20px;
+
+  img {
+    width: 150px;
+    height: auto;
+  }
+}
+
+ion-content {
+  --background: #ffffff !important;  /* Esto fuerza el fondo a ser blanco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;  /* Asegura que ocupe toda la pantalla */
+}
+
+
+@keyframes animated-background {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+ion-item {
+  --background: #1e272e;  /* Fondo oscuro para los campos */
+  --color: #ffffff;  /* Texto en blanco */
+}
+
+ion-button {
+  --background: #1e272e;  /* Botón de "Ingresar" con un azul oscuro */
+  --color: #ffffff;  /* Texto blanco */
+}
+
+ion-button[fill="clear"] {
+  --color: #bdc3c7;  /* Botón de "Restablecer Contraseña" con un tono gris */
+}
+
+ion-toolbar {
+  --background: #1e272e;  /* Fondo oscuro en el header */
+  --color: #ffffff;  /* Texto blanco en el título */
+}
