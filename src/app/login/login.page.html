@@ -12,19 +12,24 @@
   </div>
 
   <!-- Formulario de inicio de sesión -->
-
-<ion-content class="ion-padding">
   <ion-item>
     <ion-label position="floating">Nombre de Usuario</ion-label>
-    <ion-input [(ngModel)]="username"></ion-input>
+    <ion-input [(ngModel)]="username" #usernameInput="ngModel" required></ion-input>
+    <ion-text *ngIf="usernameInput.invalid && usernameInput.touched" color="danger">
+      <p>¡Este campo es obligatorio!</p>
+    </ion-text>
   </ion-item>
-
+  
   <ion-item>
     <ion-label position="floating">Contraseña</ion-label>
-    <ion-input [(ngModel)]="password" type="password"></ion-input>
+    <ion-input [(ngModel)]="password" #passwordInput="ngModel" type="password" required></ion-input>
+    <ion-text *ngIf="passwordInput.invalid && passwordInput.touched" color="danger">
+      <p>¡Este campo es obligatorio!</p>
+    </ion-text>
   </ion-item>
+  
 
-  <ion-button expand="block" (click)="login()">Ingresar</ion-button>
+  <ion-button expand="block" (click)="login()" [disabled]="!username || !password">Ingresar</ion-button>
 
   <ion-button expand="block" fill="clear" (click)="resetPassword()">Restablecer Contraseña</ion-button>
 </ion-content>

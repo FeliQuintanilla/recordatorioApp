@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from '@ionic/angular';
+import { AuthService } from '../services/auth.service';  // Importa el servicio de autenticación
 
 @Component({
   selector: 'app-login',
@@ -7,30 +8,24 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage {
-  // Define the username and password variables
   username: string = '';
   password: string = '';
 
-  constructor(private navCtrl: NavController) {}
+  constructor(private navCtrl: NavController, private authService: AuthService) {}
 
-  login() {
-    if (this.username === 'felipe' && this.password === '1234') {
-      // Navegar a la página de inicio y pasar el nombre de usuario como parámetro
-      this.navCtrl.navigateForward(`/home`, {
-        queryParams: { username: this.username }
-      });
+  async login() {
+    const success = await this.authService.login(this.username, this.password);
+    if (success) {
+      this.navCtrl.navigateForward('/home');  // Navega a la página principal si el login es exitoso
     } else {
-      alert('Invalido usario o contraseña');
+      alert('Credenciales incorrectas');
     }
   }
-  // Añade la función resetPassword aquí
+
   resetPassword() {
     this.navCtrl.navigateForward('/reset-password');
   }
-
 }
-
-
 
 
 

@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Crear Recuerdo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="stacked">Título del Recuerdo</ion-label>
+    <ion-input [(ngModel)]="memoryTitle" placeholder="Escribe un título"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Descripción</ion-label>
+    <ion-textarea [(ngModel)]="memoryDescription" placeholder="Escribe una descripción"></ion-textarea>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Ubicación</ion-label>
+    <ion-note>{{ memoryLocation }}</ion-note>
+  </ion-item>
+
+  <!-- Botón para capturar o subir una imagen -->
+  <ion-button expand="block" (click)="takePicture()">Capturar Imagen</ion-button>
+  <img [src]="capturedImage" *ngIf="capturedImage" />
+
+  <!-- Botón para guardar el recuerdo -->
+  <ion-button expand="block" (click)="saveMemory()">Guardar Recuerdo</ion-button>
+</ion-content>
+

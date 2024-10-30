@@ -1,44 +1,18 @@
 ion-content {
-    --background: #ffffff !important;  /* Fondo blanco */
-    height: 100vh;  /* Ocupa toda la pantalla */
-  }
+  --background: #222f3a !important;  
+}
+
+ion-toolbar {
+  --background: #1e272e;  /* Fondo oscuro en el header */
+  --color: #ffffff;  /* Texto blanco en el título */
+}
+ion-menu::part(backdrop) {
+  background-color: #9da2a5;
   
-  ion-toolbar {
-    --background: #1e272e;  /* Fondo oscuro para el header */
-    --color: #ffffff;  /* Texto blanco en el título */
-  }
-  
-  .welcome-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    text-align: center;
-    background-color: #1e272e;  /* Fondo oscuro */
-    color: #ffffff;  /* Texto blanco */
-  }
-  
-  h2 {
-    margin-bottom: 10px;
-    color: #ffffff;  /* Texto blanco */
-  }
-  
-  p {
-    font-size: 18px;
-    margin-bottom: 20px;
-    color: #ffffff;  /* Texto blanco */
-  }
-  
-  ion-button {
-    width: 80%;
-    margin-top: 15px;  /* Espacio adicional encima del botón */
-  }
-  
-  .add-reminder-container {
-    margin-top: 20px;
-    background-color: #1e272e;
-    width: 100%;
-  }
-  
-  
+}
+/* Estilo del botón del menú en la toolbar */
+ion-menu-button {
+  --color: #ffffff;  /* Botón del menú con texto blanco */
+}
+
+
