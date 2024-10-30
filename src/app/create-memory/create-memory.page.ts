@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Geolocation } from '@ionic-native/geolocation/ngx';  // Para obtener la ubicación
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';  // Para capturar imágenes
-import { Storage } from '@ionic/storage-angular';  // Para almacenar los recuerdos
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Geolocation } from '@ionic-native/geolocation/ngx';  
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';  
+import { Storage } from '@ionic/storage-angular';  
+import { NavController } from '@ionic/angular';  // Importa NavController
+import { AuthService } from '../services/auth.service';  // Importa AuthService
 
 @Component({
   selector: 'app-create-memory',
@@ -9,27 +11,34 @@ import { Storage } from '@ionic/storage-angular';  // Para almacenar los recuerd
   styleUrls: ['./create-memory.page.scss'],
 })
 export class CreateMemoryPage implements OnInit {
-  memoryTitle: string = '';  // Para almacenar el título del recuerdo
-  memoryDescription: string = '';  // Para almacenar la descripción del recuerdo
-  memoryLocation: string = 'Ubicación no disponible';  // Almacenar la ubicación del recuerdo
-  capturedImage: string = '';  // Almacenar la imagen capturada
+  memoryTitle: string = '';  
+  memoryDescription: string = '';  
+  memoryLocation: string = 'Ubicación no disponible';  
+  capturedImage: string = '';  
 
   constructor(
-    private geolocation: Geolocation,  // Servicio para obtener la ubicación
-    private camera: Camera,  // Servicio para capturar imágenes
-    private storage: Storage  // Servicio para almacenar datos localmente
+    private geolocation: Geolocation,  
+    private camera: Camera,  
+    private storage: Storage,  
+    private navCtrl: NavController,  // Inyecta NavController
+    private authService: AuthService,  // Inyecta AuthService para la verificación
+    private cd: ChangeDetectorRef  // Inyecta ChangeDetectorRef para forzar la detección de cambios
   ) {
-    this.initStorage();  // Inicializar el almacenamiento al crear el componente
+    this.initStorage();  
   }
 
-  // Inicializa el almacenamiento de Ionic
   async initStorage() {
     await this.storage.create();
   }
 
-  // Captura la ubicación actual del usuario
-  ngOnInit() {
-    this.getLocation();
+  async ngOnInit() {
+    // Verificar si el usuario está autenticado
+    const isAuthenticated = await this.authService.isAuthenticated();
+    if (!isAuthenticated) {
+      this.navCtrl.navigateRoot('/login');  // Redirige al login si no está autenticado
+    } else {
+      this.getLocation();  // Si está autenticado, continúa obteniendo la ubicación
+    }
   }
 
   getLocation() {
@@ -42,25 +51,25 @@ export class CreateMemoryPage implements OnInit {
     });
   }
 
-  // Captura una imagen usando la cámara
-  takePicture() {
+  // Método para capturar una imagen o seleccionar de la galería
+  takePicture(fromGallery: boolean = false) {
     const options: CameraOptions = {
       quality: 100,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType: fromGallery ? this.camera.PictureSourceType.PHOTOLIBRARY : this.camera.PictureSourceType.CAMERA  // Selecciona fuente
     };
 
     this.camera.getPicture(options).then((imageData) => {
-      // Convertir la imagen capturada en base64 para mostrarla
       this.capturedImage = 'data:image/jpeg;base64,' + imageData;
     }, (err) => {
-      console.error('Error al capturar la imagen', err);
+      console.error('Error al obtener la imagen', err);
     });
   }
 
-  // Guarda el recuerdo en el almacenamiento local
-  saveMemory() {
+  // Guarda el recuerdo y navega de vuelta al home
+  async saveMemory() {
     const newMemory = {
       title: this.memoryTitle,
       description: this.memoryDescription,
@@ -68,19 +77,20 @@ export class CreateMemoryPage implements OnInit {
       image: this.capturedImage
     };
 
-    // Obtener los recuerdos guardados anteriormente y agregar el nuevo
-    this.storage.get('memories').then((storedMemories) => {
-      if (!storedMemories) {
-        storedMemories = [];  // Si no hay recuerdos, inicializar como un array vacío
-      }
-      storedMemories.push(newMemory);  // Agregar el nuevo recuerdo
-      this.storage.set('memories', storedMemories);  // Guardar los recuerdos actualizados
-      console.log('Recuerdo guardado:', newMemory);
-    });
+    // Guardar el recuerdo en el almacenamiento local
+    let storedMemories = await this.storage.get('memories');
+    if (!storedMemories) {
+      storedMemories = [];
+    }
+    storedMemories.push(newMemory);
+    await this.storage.set('memories', storedMemories);
+
+    console.log('Recuerdo guardado:', newMemory);
+
+    // Fuerza la detección de cambios
+    this.cd.detectChanges();
+
+    // Redirige al home después de guardar el recuerdo
+    this.navCtrl.navigateBack('/home');
   }
 }
-
-
-
-
-

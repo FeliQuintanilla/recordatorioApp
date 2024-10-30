@@ -1,30 +1,37 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Crear Recuerdo</ion-title>
+    <ion-title>Reminder</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <ion-item>
-    <ion-label position="stacked">Título del Recuerdo</ion-label>
-    <ion-input [(ngModel)]="memoryTitle" placeholder="Escribe un título"></ion-input>
+    <ion-label position="floating">Título</ion-label>
+    <ion-input [(ngModel)]="memoryTitle"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label position="stacked">Descripción</ion-label>
-    <ion-textarea [(ngModel)]="memoryDescription" placeholder="Escribe una descripción"></ion-textarea>
+    <ion-label position="floating">Descripción</ion-label>
+    <ion-input [(ngModel)]="memoryDescription"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label>Ubicación</ion-label>
-    <ion-note>{{ memoryLocation }}</ion-note>
+    <ion-textarea readonly>{{ memoryLocation }}</ion-textarea>
   </ion-item>
 
-  <!-- Botón para capturar o subir una imagen -->
-  <ion-button expand="block" (click)="takePicture()">Capturar Imagen</ion-button>
-  <img [src]="capturedImage" *ngIf="capturedImage" />
+  <!-- Botón para capturar una foto o seleccionar desde la galería -->
+  <ion-button expand="block" (click)="takePicture(false)">Tomar Foto</ion-button>
+  <ion-button expand="block" (click)="takePicture(true)">Seleccionar de la Galería</ion-button>
+
+  <!-- Área para mostrar la imagen seleccionada o capturada -->
+  <div *ngIf="capturedImage">
+    <h3>Imagen Seleccionada:</h3>
+    <img [src]="capturedImage" alt="Imagen Capturada" style="width: 100%; height: auto;">
+  </div>
 
   <!-- Botón para guardar el recuerdo -->
   <ion-button expand="block" (click)="saveMemory()">Guardar Recuerdo</ion-button>
 </ion-content>
+
 

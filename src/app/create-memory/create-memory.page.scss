@@ -1,0 +1,62 @@
+/* Estilos generales del contenido */
+ion-content {
+    --background: #1e272e;  /* Fondo claro para el contenido */
+    color: #333;  /* Texto oscuro */
+    font-family: 'Arial', sans-serif;  /* Fuente clara y legible */
+  }
+  
+  /* Estilos para el ion-header */
+  ion-header ion-toolbar {
+    --background: #222f3a;  /* Fondo azul para el toolbar */
+    --color: white;  /* Texto blanco */
+  }
+  
+  ion-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Estilos para los ion-item y los inputs */
+  ion-item {
+    --background: #ffffff;  /* Fondo blanco para los items */
+    --color: #333;  /* Texto oscuro */
+    margin-bottom: 15px;  /* Espaciado entre los elementos */
+    border-radius: 8px;  /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Sombra para dar efecto de tarjeta */
+  }
+  
+  ion-input, ion-textarea {
+    --color: #333;  /* Texto oscuro */
+    --placeholder-color: #888;  /* Color del placeholder */
+  }
+  
+  ion-label {
+    font-size: 16px;
+    color: #3f51b5;  /* Color azul para las etiquetas */
+  }
+  
+  /* Estilo para los botones */
+  ion-button {
+    --background: #4CAF50;  /* Verde para los botones */
+    --color: white;  /* Texto blanco */
+    margin-top: 10px;
+  }
+  
+  ion-button:hover {
+    --background: #388E3C;  /* Verde más oscuro al pasar el mouse */
+  }
+  
+  /* Imagen seleccionada */
+  div img {
+    margin-top: 15px;
+    border-radius: 8px;  /* Bordes redondeados para la imagen */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);  /* Sombra para destacar la imagen */
+  }
+  
+  /* Texto de la imagen seleccionada */
+  div h3 {
+    font-size: 18px;
+    color: #3f51b5;  /* Azul oscuro para el texto */
+    margin-bottom: 10px;
+  }
+  
