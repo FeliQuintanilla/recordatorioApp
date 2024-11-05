@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header> 
   <ion-toolbar>
     <ion-title>Reminder</ion-title>
   </ion-toolbar>
@@ -13,9 +13,9 @@
 
   <!-- Formulario de inicio de sesión -->
   <ion-item>
-    <ion-label position="floating">Nombre de Usuario</ion-label>
-    <ion-input [(ngModel)]="username" #usernameInput="ngModel" required></ion-input>
-    <ion-text *ngIf="usernameInput.invalid && usernameInput.touched" color="danger">
+    <ion-label position="floating">Correo Electrónico</ion-label>
+    <ion-input [(ngModel)]="email" #emailInput="ngModel" required type="email"></ion-input>
+    <ion-text *ngIf="emailInput.invalid && emailInput.touched" color="danger">
       <p>¡Este campo es obligatorio!</p>
     </ion-text>
   </ion-item>
@@ -27,9 +27,8 @@
       <p>¡Este campo es obligatorio!</p>
     </ion-text>
   </ion-item>
-  
 
-  <ion-button expand="block" (click)="login()" [disabled]="!username || !password">Ingresar</ion-button>
+  <ion-button expand="block" (click)="login()" [disabled]="!email || !password">Ingresar</ion-button>
 
   <ion-button expand="block" fill="clear" (click)="resetPassword()">Restablecer Contraseña</ion-button>
 </ion-content>

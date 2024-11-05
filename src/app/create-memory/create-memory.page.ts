@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; 
 import { Geolocation } from '@ionic-native/geolocation/ngx';  
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';  
 import { Storage } from '@ionic/storage-angular';  
-import { NavController } from '@ionic/angular';  // Importa NavController
-import { AuthService } from '../services/auth.service';  // Importa AuthService
+import { NavController } from '@ionic/angular';
+import { AuthService } from '../services/auth.service';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-create-memory',
@@ -15,16 +16,18 @@ export class CreateMemoryPage implements OnInit {
   memoryDescription: string = '';  
   memoryLocation: string = 'Ubicación no disponible';  
   capturedImage: string = '';  
+  isWeb: boolean;
 
   constructor(
     private geolocation: Geolocation,  
     private camera: Camera,  
     private storage: Storage,  
-    private navCtrl: NavController,  // Inyecta NavController
-    private authService: AuthService,  // Inyecta AuthService para la verificación
-    private cd: ChangeDetectorRef  // Inyecta ChangeDetectorRef para forzar la detección de cambios
+    private navCtrl: NavController,
+    private authService: AuthService,
+    private cd: ChangeDetectorRef
   ) {
-    this.initStorage();  
+    this.initStorage();
+    this.isWeb = !Capacitor.isNativePlatform();
   }
 
   async initStorage() {
@@ -32,12 +35,11 @@ export class CreateMemoryPage implements OnInit {
   }
 
   async ngOnInit() {
-    // Verificar si el usuario está autenticado
     const isAuthenticated = await this.authService.isAuthenticated();
     if (!isAuthenticated) {
-      this.navCtrl.navigateRoot('/login');  // Redirige al login si no está autenticado
+      this.navCtrl.navigateRoot('/login');
     } else {
-      this.getLocation();  // Si está autenticado, continúa obteniendo la ubicación
+      this.getLocation();
     }
   }
 
@@ -51,24 +53,40 @@ export class CreateMemoryPage implements OnInit {
     });
   }
 
-  // Método para capturar una imagen o seleccionar de la galería
   takePicture(fromGallery: boolean = false) {
-    const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.DATA_URL,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
-      sourceType: fromGallery ? this.camera.PictureSourceType.PHOTOLIBRARY : this.camera.PictureSourceType.CAMERA  // Selecciona fuente
-    };
+    if (this.isWeb) {
+      // Usa <input type="file"> para seleccionar imagen en el navegador
+      const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+      fileInput?.click();
+    } else {
+      const options: CameraOptions = {
+        quality: 100,
+        destinationType: this.camera.DestinationType.DATA_URL,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        sourceType: fromGallery ? this.camera.PictureSourceType.PHOTOLIBRARY : this.camera.PictureSourceType.CAMERA
+      };
 
-    this.camera.getPicture(options).then((imageData) => {
-      this.capturedImage = 'data:image/jpeg;base64,' + imageData;
-    }, (err) => {
-      console.error('Error al obtener la imagen', err);
-    });
+      this.camera.getPicture(options).then((imageData) => {
+        this.capturedImage = 'data:image/jpeg;base64,' + imageData;
+      }, (err) => {
+        console.error('Error al obtener la imagen', err);
+      });
+    }
   }
 
-  // Guarda el recuerdo y navega de vuelta al home
+  onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.capturedImage = reader.result as string;
+        this.cd.detectChanges(); // Forzar la actualización de la imagen en la vista
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   async saveMemory() {
     const newMemory = {
       title: this.memoryTitle,
@@ -77,7 +95,6 @@ export class CreateMemoryPage implements OnInit {
       image: this.capturedImage
     };
 
-    // Guardar el recuerdo en el almacenamiento local
     let storedMemories = await this.storage.get('memories');
     if (!storedMemories) {
       storedMemories = [];
@@ -86,11 +103,8 @@ export class CreateMemoryPage implements OnInit {
     await this.storage.set('memories', storedMemories);
 
     console.log('Recuerdo guardado:', newMemory);
-
-    // Fuerza la detección de cambios
     this.cd.detectChanges();
-
-    // Redirige al home después de guardar el recuerdo
     this.navCtrl.navigateBack('/home');
   }
 }
+

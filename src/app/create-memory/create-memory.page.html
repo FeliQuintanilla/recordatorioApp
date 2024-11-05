@@ -21,8 +21,10 @@
   </ion-item>
 
   <!-- Botón para capturar una foto o seleccionar desde la galería -->
-  <ion-button expand="block" (click)="takePicture(false)">Tomar Foto</ion-button>
   <ion-button expand="block" (click)="takePicture(true)">Seleccionar de la Galería</ion-button>
+
+  <!-- Input file solo para el navegador, oculto -->
+  <input type="file" id="fileInput" (change)="onFileSelected($event)" accept="image/*" hidden />
 
   <!-- Área para mostrar la imagen seleccionada o capturada -->
   <div *ngIf="capturedImage">
@@ -33,5 +35,6 @@
   <!-- Botón para guardar el recuerdo -->
   <ion-button expand="block" (click)="saveMemory()">Guardar Recuerdo</ion-button>
 </ion-content>
+
 
 
