@@ -1,63 +1,106 @@
-/* Estilos generales del contenido */
+/* Fondo general de la página */
 ion-content {
-    --background: #1e272e;  /* Fondo claro para el contenido */
-    color: #333;  /* Texto oscuro */
-    font-family: 'Arial', sans-serif;  /* Fuente clara y legible */
-  }
-  
-  
-  /* Estilos para el ion-header */
-  ion-header ion-toolbar {
-    --background: #222f3a;  /* Fondo azul para el toolbar */
-    --color: white;  /* Texto blanco */
-  }
-  
-  ion-title {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  /* Estilos para los ion-item y los inputs */
-  ion-item {
-    --background: #ffffff;  /* Fondo blanco para los items */
-    --color: #333;  /* Texto oscuro */
-    margin-bottom: 15px;  /* Espaciado entre los elementos */
-    border-radius: 8px;  /* Bordes redondeados */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Sombra para dar efecto de tarjeta */
-  }
-  
-  ion-input, ion-textarea {
-    --color: #333;  /* Texto oscuro */
-    --placeholder-color: #888;  /* Color del placeholder */
-  }
-  
-  ion-label {
-    font-size: 16px;
-    color: #3f51b5;  /* Color azul para las etiquetas */
-  }
-  
-  /* Estilo para los botones */
-  ion-button {
-    --background: #4CAF50;  /* Verde para los botones */
-    --color: white;  /* Texto blanco */
-    margin-top: 10px;
-  }
-  
-  ion-button:hover {
-    --background: #388E3C;  /* Verde más oscuro al pasar el mouse */
-  }
-  
-  /* Imagen seleccionada */
-  div img {
-    margin-top: 15px;
-    border-radius: 8px;  /* Bordes redondeados para la imagen */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);  /* Sombra para destacar la imagen */
-  }
-  
-  /* Texto de la imagen seleccionada */
-  div h3 {
-    font-size: 18px;
-    color: #3f51b5;  /* Azul oscuro para el texto */
-    margin-bottom: 10px;
-  }
-  
+  --background: #1e272e !important; /* Fondo oscuro */
+  color: white; /* Texto blanco */
+  font-family: 'Arial', sans-serif; /* Fuente legible */
+}
+
+/* Encabezado */
+ion-header ion-toolbar {
+  --background: #222f3a; /* Fondo azul oscuro */
+  --color: white; /* Texto blanco */
+}
+
+/* Título del encabezado */
+ion-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Estilos para los ion-item */
+ion-item {
+  --background: #2b343d; /* Fondo ligeramente más claro */
+  --color: white; /* Texto blanco */
+  margin-bottom: 15px; /* Espaciado entre items */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra */
+}
+
+/* Inputs y textareas */
+ion-input,
+ion-textarea {
+  --color: white; /* Texto blanco */
+  --placeholder-color: #888; /* Placeholder gris */
+}
+
+/* Etiquetas */
+ion-label {
+  font-size: 16px;
+  color: #4caf50; /* Verde para resaltar etiquetas */
+}
+
+/* Botones principales */
+ion-button {
+  --background: #4CAF50; /* Verde */
+  --color: white; /* Texto blanco */
+  margin-top: 10px;
+}
+
+ion-button:hover {
+  --background: #388E3C; /* Verde más oscuro */
+}
+
+/* Imagen seleccionada */
+div img {
+  margin-top: 15px;
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sombra */
+}
+
+/* Texto de la imagen seleccionada */
+div h3 {
+  font-size: 18px;
+  color: #4caf50; /* Verde para el texto */
+  margin-bottom: 10px;
+}
+
+/* Footer completamente transparente */
+ion-footer {
+  background: transparent !important; /* Fondo transparente */
+  border: none !important; /* Sin bordes */
+}
+
+/* Botones del footer (transparentes y centrados) */
+.footer-button {
+  --background: transparent !important; /* Fondo transparente */
+  --box-shadow: none !important; /* Sin sombras */
+  width: 56px; /* Tamaño uniforme */
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Botón flotante central */
+.fab-button {
+  --background: transparent !important; /* Fondo transparente */
+  --box-shadow: none !important; /* Sin sombras */
+  width: 64px; /* Tamaño más grande */
+  height: 64px;
+  border-radius: 50%; /* Forma circular */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Iconos personalizados */
+.footer-icon {
+  color: white; /* Color blanco */
+  font-size: 28px; /* Tamaño grande */
+  transition: transform 0.2s ease-in-out; /* Efecto suave */
+}
+
+/* Efecto hover en los botones */
+.footer-button:hover .footer-icon, .fab-button:hover .footer-icon {
+  transform: scale(1.2); /* Aumenta ligeramente el tamaño */
+}

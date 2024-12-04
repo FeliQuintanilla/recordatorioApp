@@ -27,14 +27,45 @@
   <input type="file" id="fileInput" (change)="onFileSelected($event)" accept="image/*" hidden />
 
   <!-- Área para mostrar la imagen seleccionada o capturada -->
-  <div *ngIf="capturedImage">
+  <div *ngIf="capturedImage" style="text-align: center; margin-top: 20px;">
     <h3>Imagen Seleccionada:</h3>
-    <img [src]="capturedImage" alt="Imagen Capturada" style="width: 100%; height: auto;">
+    <img [src]="capturedImage" alt="Imagen Capturada" style="max-width: 100%; height: auto; border-radius: 8px;">
   </div>
 
   <!-- Botón para guardar el recuerdo -->
   <ion-button expand="block" (click)="saveMemory()">Guardar Recuerdo</ion-button>
 </ion-content>
 
+<!-- Footer -->
+<ion-footer>
+  <ion-toolbar style="background: transparent; border: none;">
+    <ion-grid>
+      <ion-row>
+        <!-- Botón de la casita -->
+        <ion-col class="ion-text-center">
+          <ion-button fill="clear" [routerLink]="['/home']">
+            <ion-icon name="home-outline" size="large" style="color: white;"></ion-icon>
+          </ion-button>
+        </ion-col>
 
+        <!-- Botón central para agregar -->
+        <ion-col class="ion-text-center">
+          <ion-button
+            fill="clear"
+            [routerLink]="['/create-memory']"
+            style="border-radius: 50%; height: 56px; width: 56px;">
+            <ion-icon name="add-outline" size="large" style="color: white;"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+        <!-- Botón de cerrar sesión -->
+        <ion-col class="ion-text-center">
+          <ion-button fill="clear" (click)="presentLogoutConfirmation()">
+            <ion-icon name="log-out-outline" size="large" style="color: white;"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>
 

@@ -1,18 +1,86 @@
+/* Fondo general de la aplicación */
 ion-content {
-  --background: #222f3a !important;  
+  --background: #222f3a !important; /* Fondo oscuro pero elegante */
 }
 
+/* Estilo del encabezado */
 ion-toolbar {
-  --background: #1e272e;  /* Fondo oscuro en el header */
-  --color: #ffffff;  /* Texto blanco en el título */
+  --background: #1e272e; /* Fondo oscuro en el header */
+  --color: #ffffff; /* Texto blanco */
+  --ion-border-color: #2b343d; /* Línea inferior sutil para separar */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra ligera */
 }
+
+/* Fondo del menú lateral */
 ion-menu::part(backdrop) {
-  background-color: #9da2a5;
-  
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo semi-transparente */
 }
-/* Estilo del botón del menú en la toolbar */
+
+/* Botón del menú (toolbar) */
 ion-menu-button {
-  --color: #ffffff;  /* Botón del menú con texto blanco */
+  --color: #ffffff; /* Botón del menú con texto blanco */
+  font-size: 22px; /* Tamaño ligeramente mayor */
 }
 
+/* Estilo de los elementos del menú lateral */
+ion-item {
+  --background: #1e272e; /* Fondo igual al header para cohesión */
+  --color: #ffffff; /* Texto blanco */
+  border-bottom: 1px solid #2b343d; /* Línea sutil entre elementos */
+}
 
+ion-item:hover {
+  --background: #2b343d; /* Efecto hover más claro */
+}
+
+/* Iconos en los elementos del menú */
+ion-item ion-icon {
+  color: #9da2a5; /* Iconos gris claro */
+}
+
+/* Texto en los elementos del menú */
+ion-item ion-label {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Footer completamente transparente */
+ion-footer {
+  background: transparent !important; /* Fondo transparente */
+  border: none !important; /* Sin bordes */
+}
+
+/* Botones del footer (transparentes y centrados) */
+.footer-button {
+  --background: transparent !important; /* Fondo transparente */
+  --box-shadow: none !important; /* Sin sombras */
+  width: 56px; /* Tamaño uniforme */
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Botón flotante central */
+.fab-button {
+  --background: transparent !important; /* Fondo transparente */
+  --box-shadow: none !important; /* Sin sombras */
+  width: 64px; /* Tamaño más grande para destacar */
+  height: 64px;
+  border-radius: 50%; /* Forma circular */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Iconos personalizados */
+.footer-icon {
+  color: white; /* Color blanco para los íconos */
+  font-size: 28px; /* Tamaño más grande */
+  transition: transform 0.2s ease-in-out; /* Efecto suave */
+}
+
+/* Efecto hover en los botones */
+.footer-button:hover .footer-icon, .fab-button:hover .footer-icon {
+  transform: scale(1.2); /* Aumenta ligeramente el tamaño */
+}

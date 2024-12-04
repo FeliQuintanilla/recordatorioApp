@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -8,24 +8,41 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage {
-  email: string = '';  // Cambiado de username a email
+  email: string = ''; // Cambiado de username a email
   password: string = '';
+  isLoading: boolean = false; // Estado para manejar el loader
 
   constructor(
-    private navCtrl: NavController, 
-    private authService: AuthService, 
-    private alertController: AlertController
+    private navCtrl: NavController,
+    private authService: AuthService,
+    private alertController: AlertController,
+    private loadingController: LoadingController // Importado para mostrar el loader
   ) {}
 
   // Método para manejar el login
   async login() {
+    // Mostrar el loader
+    this.isLoading = true;
+
+    const loading = await this.loadingController.create({
+      message: 'Iniciando sesión...',
+      spinner: 'crescent',
+    });
+    await loading.present();
+
     try {
-      const success = await this.authService.login(this.email, this.password);  // Cambiado username a email
+      const success = await this.authService.login(this.email, this.password); // Cambiado username a email
       if (success) {
-        this.navCtrl.navigateForward('/home');  // Navega a la página principal si el login es exitoso
+        this.isLoading = false;
+        await loading.dismiss();
+        this.navCtrl.navigateForward('/home'); // Navega a la página principal si el login es exitoso
+      } else {
+        throw new Error('Credenciales incorrectas');
       }
     } catch (error) {
-      this.presentLoginError();  // Muestra el mensaje de error
+      this.isLoading = false;
+      await loading.dismiss();
+      this.presentLoginError(); // Muestra el mensaje de error
     }
   }
 
@@ -34,7 +51,7 @@ export class LoginPage {
     const alert = await this.alertController.create({
       header: 'Error',
       message: 'Credenciales incorrectas. Por favor, verifica tu correo electrónico y contraseña.',
-      buttons: ['OK']
+      buttons: ['OK'],
     });
 
     await alert.present();
@@ -44,5 +61,9 @@ export class LoginPage {
   resetPassword() {
     this.navCtrl.navigateForward('/reset-password');
   }
-}
 
+  // Navegar a la página de registro
+  goToRegister() {
+    this.navCtrl.navigateForward('/register');
+  }
+}

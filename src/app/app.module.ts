@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { IonicStorageModule } from '@ionic/storage-angular';
+import { HttpClientModule } from '@angular/common/http'; // Importación para solicitudes HTTP
 
 // Firebase SDK Direct Imports
 import { initializeApp } from 'firebase/app';
@@ -24,7 +25,8 @@ const firebaseAuth = getAuth(firebaseApp);
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    HttpClientModule // Agregado para habilitar solicitudes HTTP
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -32,6 +34,6 @@ const firebaseAuth = getAuth(firebaseApp);
     Camera
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Permitir componentes personalizados de Ionic
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Permitir componentes personalizados de Ionic
 })
 export class AppModule {}

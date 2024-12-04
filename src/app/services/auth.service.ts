@@ -1,57 +1,101 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { getAuth, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  UserCredential,
+} from 'firebase/auth';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private auth = getAuth();
+  private auth = getAuth(); // Inicializar Firebase Auth
 
   constructor(private storage: Storage) {
     this.init();
   }
 
+  // Inicializar almacenamiento local
   async init() {
     await this.storage.create();
   }
 
-  // Método de login que soporta autenticación local y Firebase
-  async login(usernameOrEmail: string, password: string): Promise<boolean> {
-    // Si es el usuario local
-    if (usernameOrEmail === 'admin' && password === '1234') {
-      await this.storage.set('username', usernameOrEmail);
-      return true;
-    }
-    
-    // Si es un correo electrónico, intenta con Firebase
+  // Método para registrar un nuevo usuario
+  async register(email: string, password: string): Promise<UserCredential> {
     try {
-      const userCredential: UserCredential = await signInWithEmailAndPassword(this.auth, usernameOrEmail, password);
-      await this.storage.set('firebaseUser', userCredential.user.uid);  // Guarda el UID de Firebase en local storage
+      console.log('Intentando registrar usuario en Firebase...');
+      const userCredential = await createUserWithEmailAndPassword(
+        this.auth,
+        email,
+        password
+      );
+      console.log('Usuario registrado exitosamente:', userCredential);
+      return userCredential; // Devolver las credenciales del usuario registrado
+    } catch (error) {
+      console.error('Error en el registro de Firebase:', error);
+      throw error; // Propagar el error para manejarlo en el componente
+    }
+  }
+
+  // Método para iniciar sesión
+  async login(usernameOrEmail: string, password: string): Promise<boolean> {
+    try {
+      console.log('Intentando iniciar sesión...');
+      const userCredential: UserCredential = await signInWithEmailAndPassword(
+        this.auth,
+        usernameOrEmail,
+        password
+      );
+      console.log('Inicio de sesión exitoso:', userCredential);
+
+      // Guardar UID de Firebase en almacenamiento local
+      await this.storage.set('firebaseUser', userCredential.user.uid);
       return true;
     } catch (error) {
-      console.error('Error en inicio de sesión de Firebase', error);
+      console.error('Error en el inicio de sesión:', error);
       return false;
     }
   }
 
+  // Obtener el correo del usuario autenticado
+  async getUserEmail(): Promise<string | null> {
+    const currentUser = this.auth.currentUser; // Obtiene el usuario actual
+    if (currentUser) {
+      return currentUser.email; // Devuelve el correo del usuario autenticado
+    }
+    return null; // Si no hay usuario autenticado, devuelve null
+  }
+
+  async getUsername(): Promise<string | null> {
+    const currentUser = this.auth.currentUser; // Obtiene el usuario actual
+    if (currentUser) {
+      return currentUser.email || 'Usuario'; // Devuelve el correo como nombre de usuario
+    }
+    return null; // Si no hay usuario autenticado, devuelve null
+  }
+
   // Verificar si el usuario está autenticado (local o Firebase)
   async isAuthenticated(): Promise<boolean> {
-    const username = await this.storage.get('username');
     const firebaseUser = await this.storage.get('firebaseUser');
-    return !!username || !!firebaseUser;  // Devuelve true si hay autenticación local o de Firebase
+    return !!firebaseUser; // Devuelve true si hay un UID almacenado
   }
 
-  // Obtener el nombre de usuario local o el UID de Firebase
-  async getUsername(): Promise<string | null> {
-    const username = await this.storage.get('username');
+  // Obtener el UID del usuario autenticado
+  async getUserUid(): Promise<string | null> {
     const firebaseUser = await this.storage.get('firebaseUser');
-    return username || firebaseUser;
+    return firebaseUser;
   }
 
-  // Método para cerrar sesión (logout) para ambos métodos
+  // Método para cerrar sesión
   async logout() {
-    await this.storage.remove('username');  // Elimina el usuario local
-    await this.storage.remove('firebaseUser');  // Elimina el UID de Firebase
+    try {
+      console.log('Cerrando sesión...');
+      await this.storage.remove('firebaseUser'); // Elimina el UID de Firebase del almacenamiento local
+      console.log('Sesión cerrada exitosamente.');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
   }
 }

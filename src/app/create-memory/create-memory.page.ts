@@ -1,10 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; 
-import { Geolocation } from '@ionic-native/geolocation/ngx';  
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';  
-import { Storage } from '@ionic/storage-angular';  
-import { NavController } from '@ionic/angular';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { Storage } from '@ionic/storage-angular';
+import { NavController, AlertController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Capacitor } from '@capacitor/core';
+import { HttpClient } from '@angular/common/http'; // Importación para solicitudes HTTP
 
 @Component({
   selector: 'app-create-memory',
@@ -12,19 +13,24 @@ import { Capacitor } from '@capacitor/core';
   styleUrls: ['./create-memory.page.scss'],
 })
 export class CreateMemoryPage implements OnInit {
-  memoryTitle: string = '';  
-  memoryDescription: string = '';  
-  memoryLocation: string = 'Ubicación no disponible';  
-  capturedImage: string = '';  
+  memoryTitle: string = '';
+  memoryDescription: string = '';
+  memoryLocation: string = 'Ubicación no disponible';
+  capturedImage: string = '';
   isWeb: boolean;
 
+  // Tu API Key de LocationIQ
+  private apiKey: string = 'pk.7a3b067a566ca77d3ed654acd8a6f036';
+
   constructor(
-    private geolocation: Geolocation,  
-    private camera: Camera,  
-    private storage: Storage,  
+    private geolocation: Geolocation,
+    private camera: Camera,
+    private storage: Storage,
     private navCtrl: NavController,
     private authService: AuthService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private alertController: AlertController,
+    private http: HttpClient // Agregado para solicitudes HTTP
   ) {
     this.initStorage();
     this.isWeb = !Capacitor.isNativePlatform();
@@ -47,15 +53,34 @@ export class CreateMemoryPage implements OnInit {
     this.geolocation.getCurrentPosition().then((resp) => {
       const lat = resp.coords.latitude;
       const lon = resp.coords.longitude;
-      this.memoryLocation = `Latitud: ${lat}, Longitud: ${lon}`;
+
+      // Llama al método para obtener dirección
+      this.getAddressFromCoordinates(lat, lon).then((address) => {
+        this.memoryLocation = address; // Actualizar la ubicación con la dirección obtenida
+      });
     }).catch((error) => {
       console.log('Error obteniendo ubicación', error);
+      this.memoryLocation = 'Ubicación no disponible';
     });
+  }
+
+  async getAddressFromCoordinates(lat: number, lon: number): Promise<string> {
+    const url = `https://us1.locationiq.com/v1/reverse.php?key=${this.apiKey}&lat=${lat}&lon=${lon}&format=json`;
+    try {
+      const response: any = await this.http.get(url).toPromise();
+      if (response && response.display_name) {
+        return response.display_name; // Retorna la dirección
+      } else {
+        return 'Dirección no encontrada';
+      }
+    } catch (error) {
+      console.error('Error obteniendo dirección:', error);
+      return 'Error obteniendo dirección';
+    }
   }
 
   takePicture(fromGallery: boolean = false) {
     if (this.isWeb) {
-      // Usa <input type="file"> para seleccionar imagen en el navegador
       const fileInput = document.getElementById('fileInput') as HTMLInputElement;
       fileInput?.click();
     } else {
@@ -64,14 +89,17 @@ export class CreateMemoryPage implements OnInit {
         destinationType: this.camera.DestinationType.DATA_URL,
         encodingType: this.camera.EncodingType.JPEG,
         mediaType: this.camera.MediaType.PICTURE,
-        sourceType: fromGallery ? this.camera.PictureSourceType.PHOTOLIBRARY : this.camera.PictureSourceType.CAMERA
+        sourceType: fromGallery ? this.camera.PictureSourceType.PHOTOLIBRARY : this.camera.PictureSourceType.CAMERA,
       };
 
-      this.camera.getPicture(options).then((imageData) => {
-        this.capturedImage = 'data:image/jpeg;base64,' + imageData;
-      }, (err) => {
-        console.error('Error al obtener la imagen', err);
-      });
+      this.camera.getPicture(options).then(
+        (imageData) => {
+          this.capturedImage = 'data:image/jpeg;base64,' + imageData;
+        },
+        (err) => {
+          console.error('Error al obtener la imagen', err);
+        }
+      );
     }
   }
 
@@ -81,7 +109,7 @@ export class CreateMemoryPage implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.capturedImage = reader.result as string;
-        this.cd.detectChanges(); // Forzar la actualización de la imagen en la vista
+        this.cd.detectChanges();
       };
       reader.readAsDataURL(file);
     }
@@ -92,7 +120,7 @@ export class CreateMemoryPage implements OnInit {
       title: this.memoryTitle,
       description: this.memoryDescription,
       location: this.memoryLocation,
-      image: this.capturedImage
+      image: this.capturedImage,
     };
 
     let storedMemories = await this.storage.get('memories');
@@ -106,5 +134,30 @@ export class CreateMemoryPage implements OnInit {
     this.cd.detectChanges();
     this.navCtrl.navigateBack('/home');
   }
-}
 
+  // Método para mostrar confirmación de cierre de sesión
+  async presentLogoutConfirmation() {
+    const alert = await this.alertController.create({
+      header: 'Confirmar',
+      message: '¿Estás seguro de que quieres cerrar sesión?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cierre de sesión cancelado');
+          },
+        },
+        {
+          text: 'Confirmar',
+          handler: async () => {
+            await this.authService.logout();
+            this.navCtrl.navigateRoot('/login');
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+}

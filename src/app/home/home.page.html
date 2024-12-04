@@ -7,15 +7,15 @@
 
   <ion-content class="ion-padding">
     <ion-list>
-      <ion-item>
+      <ion-item button [routerLink]="['/profile']">
         <ion-icon name="person-outline" slot="start"></ion-icon>
         <ion-label>Perfil</ion-label>
       </ion-item>
-      <ion-item>
+      <ion-item button [routerLink]="['/settings']">
         <ion-icon name="settings-outline" slot="start"></ion-icon>
         <ion-label>Configuraciones</ion-label>
       </ion-item>
-      <ion-item (click)="presentLogoutConfirmation()">
+      <ion-item button (click)="presentLogoutConfirmation()">
         <ion-icon name="log-out-outline" slot="start"></ion-icon>
         <ion-label>Salir</ion-label>
       </ion-item>
@@ -33,41 +33,71 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content class="ion-padding-horizontal">
+  <ion-content class="ion-padding-horizontal" fullscreen>
     <div class="welcome-message" style="text-align: center; margin-top: 20px;">
-      <h2 style="font-size: 24px; font-weight: bold;">¡Hola, {{ username }}!</h2>
-      <p style="font-size: 16px; color: #666;">Bienvenido a tu espacio de recuerdos locales. Aquí podrás guardar y explorar tus momentos especiales.</p>
+      <h2 class="welcome-title">¡Hola, {{ username }}!</h2>
+      <p class="welcome-description">Bienvenido a tu espacio de recuerdos locales. Aquí podrás guardar y explorar tus momentos especiales.</p>
     </div>
 
     <!-- Lista de recuerdos guardados -->
     <ion-text color="medium" *ngIf="memories.length > 0">
-      <h3>Tus recuerdos</h3>
+      <h3 class="memory-title">Tus recuerdos</h3>
     </ion-text>
 
     <ion-list *ngIf="memories.length > 0" style="margin-bottom: 0;">
       <ion-item *ngFor="let memory of memories; let i = index" lines="full">
         <ion-thumbnail slot="start">
-          <img [src]="memory.image" *ngIf="memory.image">
+          <img [src]="memory.image" *ngIf="memory.image" alt="Memory image">
         </ion-thumbnail>
         <ion-label>
-          <h2 style="font-size: 18px; font-weight: bold;">{{ memory.title }}</h2>
-          <p style="font-size: 14px; color: #666;">{{ memory.description }}</p>
-          <p style="font-size: 12px; color: #888;">{{ memory.location }}</p>
+          <h2 class="memory-label-title">{{ memory.title }}</h2>
+          <p class="memory-label-description">{{ memory.description }}</p>
+          <p class="memory-label-location">{{ memory.location }}</p>
         </ion-label>
         <ion-button fill="outline" color="danger" (click)="deleteMemory(i)">Eliminar</ion-button>
+        <ion-button fill="outline" color="primary" (click)="sendEmail(memory)">
+          Enviar por Correo
+        </ion-button>
       </ion-item>
     </ion-list>
 
     <!-- Mensaje cuando no hay recuerdos -->
     <div *ngIf="memories.length === 0" class="no-memories" style="text-align: center;">
-      <p style="color: #888;">Aún no tienes recuerdos guardados. Empieza creando uno nuevo.</p>
-      <ion-button expand="block" [routerLink]="['/create-memory']">Crear tu primer recuerdo</ion-button>
+      <p class="no-memory-text">Aún no tienes recuerdos guardados. Empieza creando uno nuevo.</p>
+      <ion-button expand="block" color="primary" [routerLink]="['/create-memory']">Crear tu primer recuerdo</ion-button>
     </div>
   </ion-content>
 
+  <!-- Footer -->
   <ion-footer>
-    <ion-toolbar>
-      <ion-button expand="block" [routerLink]="['/create-memory']" style="margin-bottom: 10px;">Agregar Recuerdo</ion-button>
+    <ion-toolbar style="background: transparent; border: none;">
+      <ion-grid>
+        <ion-row>
+          <!-- Botón de la casita -->
+          <ion-col class="ion-text-center">
+            <ion-button fill="clear" [routerLink]="['/home']">
+              <ion-icon name="home-outline" size="large" style="color: white;"></ion-icon>
+            </ion-button>
+          </ion-col>
+
+          <!-- Botón central para agregar -->
+          <ion-col class="ion-text-center">
+            <ion-button
+              fill="clear"
+              [routerLink]="['/create-memory']"
+              style="border-radius: 50%; height: 56px; width: 56px;">
+              <ion-icon name="add-outline" size="large" style="color: white;"></ion-icon>
+            </ion-button>
+          </ion-col>
+
+          <!-- Botón de cerrar sesión -->
+          <ion-col class="ion-text-center">
+            <ion-button fill="clear" (click)="presentLogoutConfirmation()">
+              <ion-icon name="log-out-outline" size="large" style="color: white;"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-toolbar>
   </ion-footer>
 </div>
